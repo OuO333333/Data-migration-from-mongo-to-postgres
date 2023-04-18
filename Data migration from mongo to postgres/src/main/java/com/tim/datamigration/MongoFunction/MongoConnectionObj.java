@@ -30,7 +30,7 @@ public class MongoConnectionObj {
 
     public MongoConnectionObj() {
         String mongoConnectionInfFilePath = new String(
-                "C:\\dv-main\\dview8\\Tools\\Tim\\java code\\datamigration\\datamigration\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\MongoConnectionInf.json");
+                "C:\\timgit\\data migration from mongo to postgres\\data migration from mongo to postgres\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\MongoConnectionInf.json");
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();
         try {

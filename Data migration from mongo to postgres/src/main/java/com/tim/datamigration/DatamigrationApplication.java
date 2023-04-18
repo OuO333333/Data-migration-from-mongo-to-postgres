@@ -27,13 +27,13 @@ public class DatamigrationApplication {
 
 		// set table with binary object
 		TableWithBinarydataObj tableWithBinarydataObj1 = new TableWithBinarydataObj();
-		String[] binaryDataColumns = { "svg" };
-		tableWithBinarydataObj1.setTableName("DView8_PanelTemplate");
+		String[] binaryDataColumns = { "str1" };
+		tableWithBinarydataObj1.setTableName("collection1");
 		tableWithBinarydataObj1.setBinaryDataColumns(binaryDataColumns);
 
 		TableWithBinarydataObj tableWithBinarydataObj2 = new TableWithBinarydataObj();
 		String[] binaryDataColumns2 = { "str1", "str2" };
-		tableWithBinarydataObj2.setTableName("CreateCollection");
+		tableWithBinarydataObj2.setTableName("collection2");
 		tableWithBinarydataObj2.setBinaryDataColumns(binaryDataColumns2);
 
 		// add object to list

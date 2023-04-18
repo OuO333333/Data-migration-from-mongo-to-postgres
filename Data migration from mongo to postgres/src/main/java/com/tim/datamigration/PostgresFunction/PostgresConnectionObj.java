@@ -26,7 +26,7 @@ public class PostgresConnectionObj {
     public PostgresConnectionObj() {
         // set postgresConnectionInfFilePath
         String postgresConnectionInfFilePath = new String(
-                "C:\\dv-main\\dview8\\Dview8-Service\\DataServer\\src\\main\\java\\com\\tim\\dview8\\database\\migrate\\FetchConnectionInf\\PostgresConnectionInf.json");
+                "C:\\timgit\\data migration from mongo to postgres\\data migration from mongo to postgres\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\PostgresConnectionInf.json");
         // fetch ConnectionInf
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();

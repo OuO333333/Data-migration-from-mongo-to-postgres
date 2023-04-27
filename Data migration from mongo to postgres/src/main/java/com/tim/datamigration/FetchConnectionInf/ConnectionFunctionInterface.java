@@ -3,7 +3,7 @@ package com.tim.datamigration.FetchConnectionInf;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.json.simple.parser.*;
+import org.json.simple.parser.ParseException;
 
 /**
  * <Description>

@@ -16,17 +16,27 @@ import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tim.datamigration.DB.ProductArrayList;
+import com.tim.datamigration.DB.DocumentObjectArrayList;
 import com.tim.datamigration.DB.TableNamesArrayList;
 import com.tim.datamigration.DB.TableWithBinarydataObj;
 import com.tim.datamigration.FetchConnectionInf.ConnectionFunctionImplement;
 import com.tim.datamigration.FetchConnectionInf.ConnectionInf;
 
+/**
+ * <Description>
+ * postgres connection object
+ */
 public class PostgresConnectionObj {
+    private Connection conn = null;
+
+    /**
+     * <Description>
+     * create and set PostgresConnectionObj
+     */
     public PostgresConnectionObj() {
         // set postgresConnectionInfFilePath
         String postgresConnectionInfFilePath = new String(
-                "C:\\timgit\\data migration from mongo to postgres\\data migration from mongo to postgres\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\PostgresConnectionInf.json");
+                "put PostgresConnectionInf.json file here");
         // fetch ConnectionInf
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();
@@ -39,6 +49,12 @@ public class PostgresConnectionObj {
         this.setConn(connectionInf);
     }
 
+    /**
+     * <Description>
+     * create and set PostgresConnectionObj
+     *
+     * @param postgresConnectionInfFilePath
+     */
     public PostgresConnectionObj(String postgresConnectionInfFilePath) {
         // fetch ConnectionInf
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
@@ -52,13 +68,22 @@ public class PostgresConnectionObj {
         this.setConn(connectionInf);
     }
 
-    private Connection conn = null;
-
+    /**
+     * <Description>
+     * get conn
+     *
+     * @return Connection
+     */
     public Connection getConn() {
         return conn;
     }
 
-    // set conn
+    /**
+     * <Description>
+     * set conn
+     *
+     * @param postgresConnectionInf
+     */
     public void setConn(ConnectionInf postgresConnectionInf) {
         try {
             String urlStr = "jdbc:postgresql://" + postgresConnectionInf.getHost() + ":"
@@ -75,7 +100,13 @@ public class PostgresConnectionObj {
         }
     }
 
-    // create normal table
+    /**
+     * <Description>
+     * create normal table
+     *
+     * @param tableName
+     * @throws SQLException
+     */
     public void createTable(String tableName) throws SQLException {
         DatabaseMetaData databaseMetaData = this.getConn()
                 .getMetaData();
@@ -97,7 +128,12 @@ public class PostgresConnectionObj {
         }
     }
 
-    // delete table
+    /**
+     * <Description>
+     * delete table
+     *
+     * @param tableName
+     */
     public void deleteTable(String tableName) {
         String sql = "DROP TABLE IF EXISTS " +
                 tableName;
@@ -111,15 +147,26 @@ public class PostgresConnectionObj {
         }
     }
 
-    // create all tables
+    /**
+     * <Description>
+     * create all tables
+     *
+     * @throws SQLException
+     */
     public void createAllTables() throws SQLException {
         // 建立所有table
-        for (String i : TableNamesArrayList.getHashSet()) {
+        for (String i : TableNamesArrayList.getTableNamesArrayList()) {
             createTable(i);
         }
     }
 
-    // create tables with binary data column and normal tables
+    /**
+     * <Description>
+     * create tables with binary data column and normal tables
+     *
+     * @param tableWithBinarydataObjList
+     * @throws SQLException
+     */
     public void createAllTables(List<TableWithBinarydataObj> tableWithBinarydataObjList) throws SQLException {
         // 建立所有table
         String[] strArr = new String[tableWithBinarydataObjList.size()];
@@ -127,7 +174,7 @@ public class PostgresConnectionObj {
             strArr[i] = tableWithBinarydataObjList.get(i).getTableName();
         }
         // create normal tables
-        for (String i : TableNamesArrayList.getHashSet()) {
+        for (String i : TableNamesArrayList.getTableNamesArrayList()) {
             // check if table i exist in strArr
             if (oneToMany(i, strArr) == false)
                 createTable(i);
@@ -138,7 +185,12 @@ public class PostgresConnectionObj {
         }
     }
 
-    // create tables with binary data column
+    /**
+     * <Description>
+     * create tables with binary data column
+     *
+     * @param tableWithBinarydataObj
+     */
     public void createTable(TableWithBinarydataObj tableWithBinarydataObj) {
         String tableName = tableWithBinarydataObj.getTableName();
         String[] binaryDataColumns = tableWithBinarydataObj.getBinaryDataColumns();
@@ -161,15 +213,20 @@ public class PostgresConnectionObj {
         }
     }
 
-    // insert documents with binary data into table
+    /**
+     * <Description>
+     * insert documents with binary data into table
+     *
+     * @param tableWithBinarydataObjList
+     */
     public void insertDocumentsToTable(List<TableWithBinarydataObj> tableWithBinarydataObjList) {
         // 將所有Documents插入已建好的table中
         // iterate all items
-        for (int i = 0; i < ProductArrayList.sizeOfProductArrayList(); i++) {
+        for (int i = 0; i < DocumentObjectArrayList.sizeOfDocumentObjectArrayList(); i++) {
             // get itemDocument, itemCollectionName, binaryDataColumns from item
             // if no mateched table name, binaryDataColumns = {}
-            Document itemDocument = ProductArrayList.getProduct(i).getDocument();
-            String itemCollectionName = ProductArrayList.getProduct(i).getCollectionName();
+            Document itemDocument = DocumentObjectArrayList.getDocumentObject(i).getDocument();
+            String itemCollectionName = DocumentObjectArrayList.getDocumentObject(i).getCollectionName();
             String[] binaryDataColumns = {};
             for (int j = 0; j < tableWithBinarydataObjList.size(); j++) {
                 if (itemCollectionName.compareTo(tableWithBinarydataObjList.get(j).getTableName()) == 0) {
@@ -225,6 +282,15 @@ public class PostgresConnectionObj {
         }
     }
 
+    /**
+     * <Description>
+     * return true if str exists in strArr,
+     * return false if str not exists in strArr
+     *
+     * @param str
+     * @param strArr
+     * @return boolean
+     */
     public boolean oneToMany(String str, String... strArr) {
         for (String item : strArr) {
             if (str.compareTo(item) == 0) {
@@ -234,6 +300,14 @@ public class PostgresConnectionObj {
         return false;
     }
 
+    /**
+     * <Description>
+     * generate sql with binary data
+     *
+     * @param productCollectionName
+     * @param columnsToRemove
+     * @return String
+     */
     public String generateSqlWithBinaryData(String productCollectionName, String[] columnsToRemove) {
         String sql = "INSERT INTO " +
                 productCollectionName +

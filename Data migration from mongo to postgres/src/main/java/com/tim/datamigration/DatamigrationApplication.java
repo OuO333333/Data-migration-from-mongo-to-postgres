@@ -14,6 +14,9 @@ import com.tim.datamigration.PostgresFunction.PostgresConnectionObj;
 public class DatamigrationApplication {
 
 	/**
+	 * <Description>
+	 * main
+	 *
 	 * @param args
 	 * @throws SQLException
 	 */

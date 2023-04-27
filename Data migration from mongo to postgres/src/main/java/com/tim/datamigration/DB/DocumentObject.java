@@ -8,12 +8,29 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * <Description>
+ * document object: id, document, collectionName
+ */
 @Entity
 @Table(name = "to postgres")
 public class DocumentObject {
+
+    /**
+     * <Description>
+     * document object constructer
+     */
     public DocumentObject() {
     }
 
+    /**
+     * <Description>
+     * create and set DocumentObject
+     *
+     * @param id
+     * @param document
+     * @param collectionName
+     */
     public DocumentObject(String id, Document document, String collectionName) {
         this.id = id;
         this.document = document;
@@ -27,28 +44,65 @@ public class DocumentObject {
     private Document document;
     private String collectionName;
 
+    /**
+     * <Description>
+     * get id
+     *
+     * @return String
+     */
     public String getId() {
         return this.id;
     }
 
+    /**
+     * <Description>
+     * set id
+     *
+     * @param id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * <Description>
+     * get document
+     *
+     * @return Document
+     */
     public Document getDocument() {
         return this.document;
     }
 
-    public void setDocument(Document name) {
-        this.document = name;
+    /**
+     * <Description>
+     * set document
+     *
+     * @param document
+     */
+    public void setDocument(Document document) {
+        this.document = document;
     }
 
+    /**
+     * <Description>
+     * get collectionName
+     *
+     * @return String
+     */
     public String getCollectionName() {
         return this.collectionName;
     }
 
-    public void setCollectionName(String collectionNames) {
-        this.collectionName = collectionNames;
+    /**
+     *
+     * <Description>
+     * set collectionName
+     *
+     * @param collectionName
+     */
+    public void setCollectionName(String collectionName) {
+        this.collectionName = collectionName;
     }
 
 }

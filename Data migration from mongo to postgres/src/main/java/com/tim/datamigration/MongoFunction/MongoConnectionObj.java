@@ -18,19 +18,27 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.tim.datamigration.DB.DocumentObject;
-import com.tim.datamigration.DB.ProductArrayList;
+import com.tim.datamigration.DB.DocumentObjectArrayList;
 import com.tim.datamigration.DB.TableNamesArrayList;
 import com.tim.datamigration.FetchConnectionInf.ConnectionFunctionImplement;
 import com.tim.datamigration.FetchConnectionInf.ConnectionInf;
 
+/**
+ * <Description>
+ * mongo connection object
+ */
 public class MongoConnectionObj {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoTemplate mongoTemplate;
 
+    /**
+     * <Description>
+     * create and set MongoConnectionObj
+     */
     public MongoConnectionObj() {
         String mongoConnectionInfFilePath = new String(
-                "C:\\timgit\\data migration from mongo to postgres\\data migration from mongo to postgres\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\MongoConnectionInf.json");
+                "put MongoConnectionInf.json file path here");
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();
         try {
@@ -41,6 +49,12 @@ public class MongoConnectionObj {
         this.setMongoConnectionObj(connectionInf);
     }
 
+    /**
+     * <Description>
+     * create and set MongoConnectionObj
+     *
+     * @param mongoConnectionInfFilePath
+     */
     public MongoConnectionObj(String mongoConnectionInfFilePath) {
         // fetch ConnectionInf
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
@@ -54,19 +68,34 @@ public class MongoConnectionObj {
         this.setMongoConnectionObj(connectionInf);
     }
 
-    // set MongoConnectionObj
-    // MongoClient, MongoDatabase, MongoTemplate
+    /**
+     * <Description>
+     * set mongoConnectionObj: mongoClient, mongoDatabase, mongoTemplate
+     *
+     * @param mongoConnectionInf
+     */
     public void setMongoConnectionObj(ConnectionInf mongoConnectionInf) {
         this.setMongoClient(mongoConnectionInf);
         this.setMongoDatabase(mongoConnectionInf.getDbName());
         this.setMongoTemplate(mongoConnectionInf.getDbName());
     }
 
+    /**
+     * <Description>
+     * get mongoClient
+     *
+     * @return MongoClient
+     */
     public MongoClient getMongoClient() {
         return mongoClient;
     }
 
-    // set MongoClient
+    /**
+     * <Description>
+     * set mongoClient
+     *
+     * @param mongoConnectionInf
+     */
     public void setMongoClient(ConnectionInf mongoConnectionInf) {
         ServerAddress serverAddress = new ServerAddress(mongoConnectionInf.getHost(),
                 Integer.parseInt(mongoConnectionInf.getPort()));
@@ -83,23 +112,52 @@ public class MongoConnectionObj {
         mongoClient = new MongoClient(addrs, credential, MongoClientOptions.builder().build());
     }
 
+    /**
+     * <Description>
+     * get mongoDatabase
+     *
+     * @return MongoDatabase
+     */
     public MongoDatabase getMongoDatabase() {
         return mongoDatabase;
     }
 
+    /**
+     * <Description>
+     * set mongoDatabase
+     *
+     * @param dbName
+     */
     public void setMongoDatabase(String dbName) {
         mongoDatabase = mongoClient.getDatabase(dbName);
     }
 
+    /**
+     * <Description>
+     * get mongoTemplate
+     *
+     * @return MongoTemplate
+     */
     public MongoTemplate getMongoTemplate() {
         return mongoTemplate;
     }
 
+    /**
+     * <Description>
+     * set mongoTemplate
+     *
+     * @param dbName
+     */
     public void setMongoTemplate(String dbName) {
         this.mongoTemplate = new MongoTemplate(this.mongoClient, dbName);
     }
 
-    // create collection by collectionName
+    /**
+     * <Description>
+     * create collection by collectionName
+     *
+     * @param collectionName
+     */
     public void createCollection(String collectionName) {
         try {
             this.mongoDatabase.createCollection(collectionName);
@@ -110,7 +168,12 @@ public class MongoConnectionObj {
         }
     }
 
-    // iterate documents by collectionName(only one collection)
+    /**
+     * <Description>
+     * iterate documents by collectionName(only one collection)
+     *
+     * @param collectionName
+     */
     public void iterateDocumentsByCollectionName(String collectionName) {
         try {
             // get collection
@@ -121,15 +184,19 @@ public class MongoConnectionObj {
             MongoCursor<Document> mongoCursor = findIterable.iterator();
             while (mongoCursor.hasNext()) {
                 Document nextDocument = mongoCursor.next();
-                DocumentObject product = new DocumentObject(nextDocument.get("_id").toString(), nextDocument, collectionName);
+                DocumentObject documentObject = new DocumentObject(nextDocument.get("_id").toString(), nextDocument,
+                        collectionName);
                 // insert into ProductArrayList
-                ProductArrayList.addproduct(product);
+                DocumentObjectArrayList.addDocumentObject(documentObject);
             }
         } catch (Exception e) {
         }
     }
 
-    // iterate all collections
+    /**
+     * <Description>
+     * iterate all collections
+     */
     public void iterateAllCollections() {
         // 遍歷資料庫中所有collection
         try {

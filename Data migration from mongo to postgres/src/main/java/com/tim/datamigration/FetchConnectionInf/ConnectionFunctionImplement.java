@@ -7,8 +7,22 @@ import java.io.IOException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 
+/**
+ * <Description>
+ * connection fuction implement
+ */
 public class ConnectionFunctionImplement implements ConnectionFunctionInterface {
-    // connection information to ConnectionInf
+
+    /**
+     * <Description>
+     * fetch connection information to ConnectionInf
+     *
+     * @param connectionInfPath
+     * @return ConnectionInf
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ParseException
+     */
     public ConnectionInf fetchConnectionInf(String connectionInfPath)
             throws FileNotFoundException, IOException, ParseException {
         Object ob = new JSONParser().parse(new FileReader(connectionInfPath));

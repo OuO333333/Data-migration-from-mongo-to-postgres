@@ -16,7 +16,10 @@
             "request": "launch",
             "mainClass": "com.tim.datamigration.DatamigrationApplication",
             "projectName": "datamigration",
-            "args": ["C:\\timgit\\data migration from mongo to postgres\\data migration from mongo to postgres\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\MongoConnectionInf.json", "C:\\timgit\\data migration from mongo to postgres\\data migration from mongo to postgres\\src\\main\\java\\com\\tim\\datamigration\\FetchConnectionInf\\PostgresConnectionInf.json"]
+            "args": [
+                "put MongoConnectionInf.json file path here",
+                "put PostgresConnectionInf.jsonfile path here"
+            ]
         }
     ]
 }

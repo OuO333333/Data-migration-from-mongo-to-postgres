@@ -6,20 +6,20 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
+            "name": "DataMigrationToolApplication",
             "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "DatamigrationApplication",
-            "request": "launch",
-            "mainClass": "com.tim.datamigration.DatamigrationApplication",
+            "mainClass": "com.tim.timdev.datamigration.DataMigrationToolApplication",
             "projectName": "datamigration",
             "args": [
                 "put MongoConnectionInf.json file path here",
-                "put PostgresConnectionInf.jsonfile path here"
+                "put PostgresConnectionInf.json file path here"
             ]
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
         }
     ]
 }

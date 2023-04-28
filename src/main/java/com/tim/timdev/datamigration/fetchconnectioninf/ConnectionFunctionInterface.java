@@ -1,4 +1,4 @@
-package com.tim.datamigration.FetchConnectionInf;
+package com.tim.timdev.datamigration.fetchconnectioninf;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -6,13 +6,11 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 /**
- * <Description>
- * connection function interface
+ * ConnectionFunction interface
  */
 public interface ConnectionFunctionInterface {
     /**
-     * <Description>
-     * fetch connection information to ConnectionInf
+     * fetch connection information
      *
      * @param connectionInfPath
      * @return ConnectionInf
@@ -21,5 +19,5 @@ public interface ConnectionFunctionInterface {
      * @throws ParseException
      */
     ConnectionInf fetchConnectionInf(String connectionInfPath)
-            throws FileNotFoundException, IOException, ParseException;
+            throws IOException, ParseException;
 }

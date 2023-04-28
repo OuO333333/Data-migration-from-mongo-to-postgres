@@ -1,10 +1,13 @@
-package com.tim.datamigration.MongoFunction;
+package com.tim.timdev.datamigration.mongofunction;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.parser.ParseException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -17,15 +20,14 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
-import com.tim.datamigration.DB.DocumentObject;
-import com.tim.datamigration.DB.DocumentObjectArrayList;
-import com.tim.datamigration.DB.TableNamesArrayList;
-import com.tim.datamigration.FetchConnectionInf.ConnectionFunctionImplement;
-import com.tim.datamigration.FetchConnectionInf.ConnectionInf;
+import com.tim.timdev.datamigration.fetchconnectioninf.ConnectionFunctionImplement;
+import com.tim.timdev.datamigration.fetchconnectioninf.ConnectionInf;
+import com.tim.timdev.datamigration.struct.DocumentObject;
+import com.tim.timdev.datamigration.struct.DocumentObjectArrayList;
+import com.tim.timdev.datamigration.struct.TableNamesArrayList;
 
 /**
- * <Description>
- * mongo connection object
+ * MongoConnectionObj
  */
 public class MongoConnectionObj {
     private MongoClient mongoClient;
@@ -33,12 +35,10 @@ public class MongoConnectionObj {
     private MongoTemplate mongoTemplate;
 
     /**
-     * <Description>
      * create and set MongoConnectionObj
      */
     public MongoConnectionObj() {
-        String mongoConnectionInfFilePath = new String(
-                "put MongoConnectionInf.json file path here");
+        String mongoConnectionInfFilePath = "put MongoConnectionInf.json file path here";
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();
         try {
@@ -50,7 +50,6 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
      * create and set MongoConnectionObj
      *
      * @param mongoConnectionInfFilePath
@@ -64,13 +63,14 @@ public class MongoConnectionObj {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+
         // set MongoConnectionObj
         this.setMongoConnectionObj(connectionInf);
     }
 
     /**
-     * <Description>
-     * set mongoConnectionObj: mongoClient, mongoDatabase, mongoTemplate
+     * set MongoConnectionObj:
+     * MongoClient, MongoDatabase, MongoTemplate
      *
      * @param mongoConnectionInf
      */
@@ -81,8 +81,7 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
-     * get mongoClient
+     * get mongoclient
      *
      * @return MongoClient
      */
@@ -91,7 +90,6 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
      * set mongoClient
      *
      * @param mongoConnectionInf
@@ -99,21 +97,22 @@ public class MongoConnectionObj {
     public void setMongoClient(ConnectionInf mongoConnectionInf) {
         ServerAddress serverAddress = new ServerAddress(mongoConnectionInf.getHost(),
                 Integer.parseInt(mongoConnectionInf.getPort()));
-        List<ServerAddress> addrs = new ArrayList<ServerAddress>();
+        List<ServerAddress> addrs = new ArrayList<>();
         addrs.add(serverAddress);
+
         // MongoCredential.createScramSha1Credential()三個參數分別為 用戶名 資料庫名稱 密碼
-        String str = new String(mongoConnectionInf.getPassword());
+        String str = mongoConnectionInf.getPassword();
         MongoCredential credential = MongoCredential.createScramSha1Credential(mongoConnectionInf.getUsername(),
                 mongoConnectionInf.getDbName(),
                 str.toCharArray());
-        List<MongoCredential> credentials = new ArrayList<MongoCredential>();
+        List<MongoCredential> credentials = new ArrayList<>();
         credentials.add(credential);
+
         // 獲取MongoDB連接
         mongoClient = new MongoClient(addrs, credential, MongoClientOptions.builder().build());
     }
 
     /**
-     * <Description>
      * get mongoDatabase
      *
      * @return MongoDatabase
@@ -123,7 +122,6 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
      * set mongoDatabase
      *
      * @param dbName
@@ -133,8 +131,7 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
-     * get mongoTemplate
+     * get monogoTemplate
      *
      * @return MongoTemplate
      */
@@ -143,8 +140,7 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
-     * set mongoTemplate
+     * set monngoTemplate
      *
      * @param dbName
      */
@@ -153,7 +149,6 @@ public class MongoConnectionObj {
     }
 
     /**
-     * <Description>
      * create collection by collectionName
      *
      * @param collectionName
@@ -161,21 +156,25 @@ public class MongoConnectionObj {
     public void createCollection(String collectionName) {
         try {
             this.mongoDatabase.createCollection(collectionName);
-            System.out.println("---Collection " + collectionName + " create successfully---");
+
+            // Create a Logger
+            Logger logger = Logger.getLogger(
+                    MongoConnectionObj.class.getName());
+            logger.log(Level.INFO, "---Collection {0} create successfully---", collectionName);
 
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     /**
-     * <Description>
      * iterate documents by collectionName(only one collection)
      *
      * @param collectionName
      */
     public void iterateDocumentsByCollectionName(String collectionName) {
         try {
+
             // get collection
             MongoCollection<Document> collection = this.mongoDatabase.getCollection(collectionName);
 
@@ -184,33 +183,40 @@ public class MongoConnectionObj {
             MongoCursor<Document> mongoCursor = findIterable.iterator();
             while (mongoCursor.hasNext()) {
                 Document nextDocument = mongoCursor.next();
-                DocumentObject documentObject = new DocumentObject(nextDocument.get("_id").toString(), nextDocument,
+                DocumentObject product = new DocumentObject(nextDocument.get("_id").toString(), nextDocument,
                         collectionName);
+
                 // insert into ProductArrayList
-                DocumentObjectArrayList.addDocumentObject(documentObject);
+                DocumentObjectArrayList.addDocumentObject(product);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * <Description>
      * iterate all collections
      */
     public void iterateAllCollections() {
+
         // 遍歷資料庫中所有collection
         try {
-            System.out.println("---Start iterateAllCollections---");
+            Logger logger = Logger.getLogger(
+                    MongoConnectionObj.class.getName());
+            logger.log(Level.INFO, "---Start iterateAllCollections---");
             MongoIterable<String> findIterable = this.mongoDatabase.listCollectionNames();
             for (String collectionname : findIterable) {
+
                 // iterate documents by collectionName(only one collection)
                 iterateDocumentsByCollectionName(collectionname);
+
                 // collectionnames存進TableNamesArrayList中
                 if (!TableNamesArrayList.containTableName(collectionname)) {
                     TableNamesArrayList.addTable(collectionname);
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

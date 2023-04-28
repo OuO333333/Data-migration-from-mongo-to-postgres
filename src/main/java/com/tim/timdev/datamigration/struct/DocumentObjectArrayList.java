@@ -1,17 +1,19 @@
-package com.tim.datamigration.DB;
+package com.tim.timdev.datamigration.struct;
 
 import java.util.ArrayList;
 
 /**
- * <Description>
- * ProductArrayList: insert DocumentObject into ProductArrayList
+ * put DocumentObject in DocumentObjectArrayList
  */
 public class DocumentObjectArrayList {
-    private static ArrayList<DocumentObject> addrs = new ArrayList<DocumentObject>();
+    private static ArrayList<DocumentObject> addrs = new ArrayList<>();
+
+    private DocumentObjectArrayList() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
-     * <Description>
-     * add documentObject into DocumentObjectArrayList
+     * add DocumentObject
      *
      * @param documentObject
      */
@@ -20,8 +22,7 @@ public class DocumentObjectArrayList {
     }
 
     /**
-     * <Description>
-     * get DocumentObject from DocumentObjectArrayList
+     * get DocumentObject
      *
      * @param num
      * @return DocumentObject
@@ -31,7 +32,6 @@ public class DocumentObjectArrayList {
     }
 
     /**
-     * <Description>
      * get size of DocumentObjectArrayList
      *
      * @return int

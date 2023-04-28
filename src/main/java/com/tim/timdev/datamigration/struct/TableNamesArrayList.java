@@ -1,17 +1,20 @@
-package com.tim.datamigration.DB;
+package com.tim.timdev.datamigration.struct;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
- * <Description>
- * TableNamesArrayList: insert table names into TableNamesArrayList
+ * put table names in TableNamesArrayList
  */
 public class TableNamesArrayList {
-    private static HashSet<String> tableNamesSet = new HashSet<String>();
+    private static HashSet<String> tableNamesSet = new HashSet<>();
+
+    private TableNamesArrayList() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
-     * <Description>
-     * add table name
+     * add table
      *
      * @param tableName
      */
@@ -20,18 +23,16 @@ public class TableNamesArrayList {
     }
 
     /**
-     * <Description>
-     * get TableNamesArrayList
+     * get tableNamesSet
      *
      * @return HashSet<String>
      */
-    public static HashSet<String> getTableNamesArrayList() {
+    public static Set<String> getTableNamesSet() {
         return tableNamesSet;
     }
 
     /**
-     * <Description>
-     * check if table name exists in TableNamesArrayList
+     * check if table exists
      *
      * @param tableName
      * @return boolean
@@ -41,8 +42,7 @@ public class TableNamesArrayList {
     }
 
     /**
-     * <Description>
-     * get size of TableNamesArrayList
+     * get size of tableNamesSet
      *
      * @return int
      */

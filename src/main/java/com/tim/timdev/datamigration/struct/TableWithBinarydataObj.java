@@ -1,16 +1,13 @@
-package com.tim.datamigration.DB;
+package com.tim.timdev.datamigration.struct;
 
 /**
- * <Description>
- * TableWithBinarydataObj: table name, binary data columns,
- * binaryDataColumns = null if no binary data column
+ * table with binary data object
  */
 public class TableWithBinarydataObj {
     String tableName;
     String[] binaryDataColumns;
 
     /**
-     * <Description>
      * get table name
      *
      * @return String
@@ -20,7 +17,6 @@ public class TableWithBinarydataObj {
     }
 
     /**
-     * <Description>
      * set table name
      *
      * @param tableName
@@ -30,8 +26,7 @@ public class TableWithBinarydataObj {
     }
 
     /**
-     * <Description>
-     * get binary data columns
+     * get binaryDataColumns
      *
      * @return String[]
      */
@@ -40,8 +35,7 @@ public class TableWithBinarydataObj {
     }
 
     /**
-     * <Description>
-     * set binary data columns
+     * set binaryDataColumns
      *
      * @param binaryDataColumns
      */

@@ -1,7 +1,7 @@
-package com.tim.datamigration.PostgresFunction;
+package com.tim.timdev.datamigration.postgresfunction;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -10,33 +10,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bson.Document;
 import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tim.datamigration.DB.DocumentObjectArrayList;
-import com.tim.datamigration.DB.TableNamesArrayList;
-import com.tim.datamigration.DB.TableWithBinarydataObj;
-import com.tim.datamigration.FetchConnectionInf.ConnectionFunctionImplement;
-import com.tim.datamigration.FetchConnectionInf.ConnectionInf;
+import com.tim.timdev.datamigration.fetchconnectioninf.ConnectionFunctionImplement;
+import com.tim.timdev.datamigration.fetchconnectioninf.ConnectionInf;
+import com.tim.timdev.datamigration.struct.DocumentObjectArrayList;
+import com.tim.timdev.datamigration.struct.TableNamesArrayList;
+import com.tim.timdev.datamigration.struct.TableWithBinarydataObj;
 
 /**
- * <Description>
- * postgres connection object
+ * PostgresConnectionObj
  */
 public class PostgresConnectionObj {
-    private Connection conn = null;
-
     /**
-     * <Description>
      * create and set PostgresConnectionObj
      */
     public PostgresConnectionObj() {
+
         // set postgresConnectionInfFilePath
-        String postgresConnectionInfFilePath = new String(
-                "put PostgresConnectionInf.json file here");
+        String postgresConnectionInfFilePath = "put PostgresConnectionInf.json file path here";
+
         // fetch ConnectionInf
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();
@@ -45,17 +44,18 @@ public class PostgresConnectionObj {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+
         // set conn
         this.setConn(connectionInf);
     }
 
     /**
-     * <Description>
      * create and set PostgresConnectionObj
      *
      * @param postgresConnectionInfFilePath
      */
     public PostgresConnectionObj(String postgresConnectionInfFilePath) {
+
         // fetch ConnectionInf
         ConnectionFunctionImplement connectionFunctionImplement = new ConnectionFunctionImplement();
         ConnectionInf connectionInf = new ConnectionInf();
@@ -64,13 +64,15 @@ public class PostgresConnectionObj {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+
         // set conn
         this.setConn(connectionInf);
     }
 
+    private Connection conn = null;
+
     /**
-     * <Description>
-     * get conn
+     * get connection
      *
      * @return Connection
      */
@@ -79,8 +81,7 @@ public class PostgresConnectionObj {
     }
 
     /**
-     * <Description>
-     * set conn
+     * set connection
      *
      * @param postgresConnectionInf
      */
@@ -92,16 +93,15 @@ public class PostgresConnectionObj {
             conn = DriverManager
                     .getConnection(urlStr,
                             postgresConnectionInf.getUsername(), postgresConnectionInf.getPassword());
-            System.out.println("---Connect to Postgres database successfully---");
+            Logger logger = Logger.getLogger(
+                    PostgresConnectionObj.class.getName());
+            logger.log(Level.WARNING, "---Connect to Postgres database successfully---");
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
 
     /**
-     * <Description>
      * create normal table
      *
      * @param tableName
@@ -112,24 +112,29 @@ public class PostgresConnectionObj {
                 .getMetaData();
         ResultSet resultSet = databaseMetaData.getTables(null, null, tableName,
                 new String[] { "TABLE" });
-        if (!resultSet.next()) {
+
+            if (!resultSet.next()) {
             String sql = "CREATE TABLE " +
                     tableName +
                     " (ID CHAR(100) PRIMARY KEY     NOT NULL," +
                     " DOCUMENT           JSONB    NOT NULL)";
+            Statement stmt = null;
             try {
-                Statement stmt = null;
                 stmt = conn.createStatement();
                 stmt.executeUpdate(sql);
-                System.out.println("---Table " + tableName + " created successfully---");
+                Logger logger = Logger.getLogger(
+                        PostgresConnectionObj.class.getName());
+                logger.log(Level.INFO, "---Table {0} created successfully---", tableName);
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                if (stmt != null)
+                    stmt.close();
             }
         }
     }
 
     /**
-     * <Description>
      * delete table
      *
      * @param tableName
@@ -137,31 +142,38 @@ public class PostgresConnectionObj {
     public void deleteTable(String tableName) {
         String sql = "DROP TABLE IF EXISTS " +
                 tableName;
+        Statement stmt = null;
         try {
-            Statement stmt = null;
             stmt = conn.createStatement();
             stmt.executeUpdate(sql);
-            System.out.println("---Table " + tableName + " deleted successfully---");
+            Logger logger = Logger.getLogger(
+                    PostgresConnectionObj.class.getName());
+            logger.log(Level.INFO, "---Table {0} deleted successfully---", tableName);
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (stmt != null)
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
         }
     }
 
     /**
-     * <Description>
      * create all tables
      *
      * @throws SQLException
      */
     public void createAllTables() throws SQLException {
         // 建立所有table
-        for (String i : TableNamesArrayList.getTableNamesArrayList()) {
+        for (String i : TableNamesArrayList.getTableNamesSet()) {
             createTable(i);
         }
     }
 
     /**
-     * <Description>
      * create tables with binary data column and normal tables
      *
      * @param tableWithBinarydataObjList
@@ -173,12 +185,14 @@ public class PostgresConnectionObj {
         for (int i = 0; i < tableWithBinarydataObjList.size(); i++) {
             strArr[i] = tableWithBinarydataObjList.get(i).getTableName();
         }
+
         // create normal tables
-        for (String i : TableNamesArrayList.getTableNamesArrayList()) {
+        for (String i : TableNamesArrayList.getTableNamesSet()) {
             // check if table i exist in strArr
-            if (oneToMany(i, strArr) == false)
+            if (!oneToMany(i, strArr))
                 createTable(i);
         }
+
         // create special tables
         for (int i = 0; i < tableWithBinarydataObjList.size(); i++) {
             createTable(tableWithBinarydataObjList.get(i));
@@ -186,7 +200,6 @@ public class PostgresConnectionObj {
     }
 
     /**
-     * <Description>
      * create tables with binary data column
      *
      * @param tableWithBinarydataObj
@@ -194,37 +207,51 @@ public class PostgresConnectionObj {
     public void createTable(TableWithBinarydataObj tableWithBinarydataObj) {
         String tableName = tableWithBinarydataObj.getTableName();
         String[] binaryDataColumns = tableWithBinarydataObj.getBinaryDataColumns();
+
         // generate sql cmd
         String sql = "CREATE TABLE " +
                 tableName +
                 " (ID CHAR(100) PRIMARY KEY     NOT NULL," +
                 " DOCUMENT           JSONB    NOT NULL";
+        StringBuilder bld = new StringBuilder();
+        bld.append(sql);
         for (int i = 0; i < binaryDataColumns.length; i++) {
-            sql += "," + binaryDataColumns[i] + "         BYTEA";
+            bld.append("," + binaryDataColumns[i] + "         BYTEA");
         }
+        sql = bld.toString();
         sql += ")";
+        Statement stmt = null;
         try {
-            Statement stmt = null;
             stmt = conn.createStatement();
             stmt.executeUpdate(sql);
-            System.out.println("---Table " + tableName + " created successfully---");
+            Logger logger = Logger.getLogger(
+                    PostgresConnectionObj.class.getName());
+            logger.log(Level.INFO, "---Table {0} created successfully---", tableName);
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (stmt != null)
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
         }
     }
 
     /**
-     * <Description>
      * insert documents with binary data into table
      *
      * @param tableWithBinarydataObjList
+     * @throws SQLException
      */
     public void insertDocumentsToTable(List<TableWithBinarydataObj> tableWithBinarydataObjList) {
         // 將所有Documents插入已建好的table中
         // iterate all items
         for (int i = 0; i < DocumentObjectArrayList.sizeOfDocumentObjectArrayList(); i++) {
+
             // get itemDocument, itemCollectionName, binaryDataColumns from item
-            // if no mateched table name, binaryDataColumns = {}
+            // if no mateched table name, binaryDataColumns contains nothing
             Document itemDocument = DocumentObjectArrayList.getDocumentObject(i).getDocument();
             String itemCollectionName = DocumentObjectArrayList.getDocumentObject(i).getCollectionName();
             String[] binaryDataColumns = {};
@@ -233,57 +260,85 @@ public class PostgresConnectionObj {
                     binaryDataColumns = tableWithBinarydataObjList.get(j).getBinaryDataColumns();
                 }
             }
+
             // generate sql
             String sql = generateSqlWithBinaryData(itemCollectionName, binaryDataColumns);
-            PreparedStatement ps = null;
-            try {
-                ps = conn.prepareStatement(sql);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            // set id
-            try {
-                ps.setString(1, itemDocument.get("_id").toString());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            // change from _id to id
-            itemDocument.append("id", itemDocument.get("_id").toString());
-            itemDocument.remove("_id");
-            // set binary data
-            String binaryDataString = new String("");
-            for (int j = 0; j < binaryDataColumns.length; j++) {
-                binaryDataString = itemDocument.getString(binaryDataColumns[j]);
-                if (binaryDataString == null)
-                    binaryDataString = "";
-                try {
-                    ps.setBytes(j + 3, binaryDataString.getBytes("ISO8859-1"));
-                } catch (UnsupportedEncodingException | SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            // set jsonb string
-            for (int j = 0; j < binaryDataColumns.length; j++) {
-                itemDocument.remove(binaryDataColumns[j]);
-            }
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").create();
-            String jsonbString = gson.toJson(itemDocument);
-            try {
-                ps.setString(2, jsonbString);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            // execute sql
-            try {
-                ps.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+            // setand execute preparedstatement
+            setPreparedStatement(sql, itemDocument, binaryDataColumns);
         }
     }
 
     /**
-     * <Description>
+     * setand execute preparedstatement
+     *
+     * @param sql
+     * @param itemDocument
+     * @param binaryDataColumns
+     */
+    public void setPreparedStatement(String sql, Document itemDocument, String[] binaryDataColumns) {
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (ps == null)
+            throw new NullPointerException("PreparedStatement is null.");
+
+        // set id
+        try {
+            ps.setString(1, itemDocument.get("_id").toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // change from _id to id
+        itemDocument.append("id", itemDocument.get("_id").toString());
+        itemDocument.remove("_id");
+
+        // set binary data
+        String binaryDataString = "";
+        for (int j = 0; j < binaryDataColumns.length; j++) {
+            binaryDataString = itemDocument.getString(binaryDataColumns[j]);
+            if (binaryDataString == null)
+                binaryDataString = "";
+            try {
+                ps.setBytes(j + 3, binaryDataString.getBytes(StandardCharsets.ISO_8859_1));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        // set jsonb string
+        for (int j = 0; j < binaryDataColumns.length; j++) {
+            itemDocument.remove(binaryDataColumns[j]);
+        }
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").create();
+        String jsonbString = gson.toJson(itemDocument);
+        try {
+            ps.setString(2, jsonbString);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // execute sql
+        try {
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
      * return true if str exists in strArr,
      * return false if str not exists in strArr
      *
@@ -301,7 +356,6 @@ public class PostgresConnectionObj {
     }
 
     /**
-     * <Description>
      * generate sql with binary data
      *
      * @param productCollectionName
@@ -312,13 +366,19 @@ public class PostgresConnectionObj {
         String sql = "INSERT INTO " +
                 productCollectionName +
                 " (ID,DOCUMENT";
+        StringBuilder bld = new StringBuilder();
+        bld.append(sql);
         for (int i = 0; i < columnsToRemove.length; i++) {
-            sql += "," + columnsToRemove[i];
+            bld.append("," + columnsToRemove[i]);
         }
+        sql = bld.toString();
         sql += ") VALUES(?,?";
+        StringBuilder bldd = new StringBuilder();
+        bldd.append(sql);
         for (int i = 0; i < columnsToRemove.length; i++) {
-            sql += ",?";
+            bldd.append(",?");
         }
+        sql = bldd.toString();
         sql += ")";
         return sql;
     }

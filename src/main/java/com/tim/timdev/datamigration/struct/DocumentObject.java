@@ -1,4 +1,4 @@
-package com.tim.datamigration.DB;
+package com.tim.timdev.datamigration.struct;
 
 import org.bson.Document;
 
@@ -9,27 +9,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * <Description>
- * document object: id, document, collectionName
+ * DocumentObject: String id, Document document, String collectionName
  */
 @Entity
 @Table(name = "to postgres")
 public class DocumentObject {
-
-    /**
-     * <Description>
-     * document object constructer
-     */
     public DocumentObject() {
     }
 
     /**
-     * <Description>
-     * create and set DocumentObject
-     *
-     * @param id
-     * @param document
-     * @param collectionName
+     * set DocumentObject
      */
     public DocumentObject(String id, Document document, String collectionName) {
         this.id = id;
@@ -45,7 +34,6 @@ public class DocumentObject {
     private String collectionName;
 
     /**
-     * <Description>
      * get id
      *
      * @return String
@@ -55,7 +43,6 @@ public class DocumentObject {
     }
 
     /**
-     * <Description>
      * set id
      *
      * @param id
@@ -65,7 +52,6 @@ public class DocumentObject {
     }
 
     /**
-     * <Description>
      * get document
      *
      * @return Document
@@ -75,18 +61,16 @@ public class DocumentObject {
     }
 
     /**
-     * <Description>
      * set document
      *
-     * @param document
+     * @param name
      */
     public void setDocument(Document document) {
         this.document = document;
     }
 
     /**
-     * <Description>
-     * get collectionName
+     * get collection name
      *
      * @return String
      */
@@ -95,14 +79,12 @@ public class DocumentObject {
     }
 
     /**
+     * set collection name
      *
-     * <Description>
-     * set collectionName
-     *
-     * @param collectionName
+     * @param collectionNames
      */
-    public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
+    public void setCollectionName(String collectionNames) {
+        this.collectionName = collectionNames;
     }
 
 }

@@ -1,7 +1,6 @@
-package com.tim.datamigration.FetchConnectionInf;
+package com.tim.timdev.datamigration.fetchconnectioninf;
 
 /**
- * <Description>
  * connection information
  */
 public class ConnectionInf {
@@ -12,7 +11,6 @@ public class ConnectionInf {
     private String password;
 
     /**
-     * <Description>
      * set host
      *
      * @param host
@@ -22,7 +20,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * set port
      *
      * @param port
@@ -32,7 +29,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * set username
      *
      * @param username
@@ -42,7 +38,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * set dbName
      *
      * @param dbName
@@ -52,7 +47,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * set password
      *
      * @param password
@@ -62,7 +56,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * get host
      *
      * @return String
@@ -72,7 +65,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * get port
      *
      * @return String
@@ -82,7 +74,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * get username
      *
      * @return String
@@ -92,7 +83,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * get dbName
      *
      * @return String
@@ -102,7 +92,6 @@ public class ConnectionInf {
     }
 
     /**
-     * <Description>
      * get password
      *
      * @return String

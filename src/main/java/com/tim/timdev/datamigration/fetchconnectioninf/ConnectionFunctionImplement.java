@@ -1,4 +1,4 @@
-package com.tim.datamigration.FetchConnectionInf;
+package com.tim.timdev.datamigration.fetchconnectioninf;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -9,14 +9,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * <Description>
- * connection fuction implement
+ * ConnectionFunction implement
  */
 public class ConnectionFunctionImplement implements ConnectionFunctionInterface {
-
     /**
-     * <Description>
-     * fetch connection information to ConnectionInf
+     * fetch connection information
      *
      * @param connectionInfPath
      * @return ConnectionInf
@@ -25,8 +22,9 @@ public class ConnectionFunctionImplement implements ConnectionFunctionInterface 
      * @throws ParseException
      */
     public ConnectionInf fetchConnectionInf(String connectionInfPath)
-            throws FileNotFoundException, IOException, ParseException {
+            throws IOException, ParseException {
         Object ob = new JSONParser().parse(new FileReader(connectionInfPath));
+
         // typecasting ob to JSONObject
         JSONObject js = (JSONObject) ob;
         String host = (String) js.get("host");
